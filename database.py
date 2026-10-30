@@ -1,13 +1,23 @@
+import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.engine import URL
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-SQLACHEMY_DATABASE_URL = "postgresql://brunofiore:Brunexx2207.@localhost/TodoApplicationDataBase"
+load_dotenv()
 
-engine = create_engine(SQLACHEMY_DATABASE_URL)
+SQLALCHEMY_DATABASE_URL = URL.create(
+    drivername="postgresql",
+    username=os.environ["DB_USER"],
+    password=os.environ["DB_PASSWORD"],
+    host=os.getenv("DB_HOST", "localhost"),
+    port=int(os.getenv("DB_PORT", "5432")),
+    database=os.environ["DB_NAME"],
+)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush= False, bind=engine)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
-
- 
